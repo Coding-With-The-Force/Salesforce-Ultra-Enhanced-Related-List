@@ -1,0 +1,94 @@
+<!--
+* @author Matt Gerry
+* @date  02/26/2021
+-->
+
+<template>
+    <lightning-layout class="slds-align-bottom" multiple-rows="false">
+        <lightning-layout-item class="slds-align-bottom slds-p-around_xx-small" flexibility="auto">
+            <lightning-input type="search" label="Search Table" onchange={searchDataTable}></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item class="slds-align-bottom slds-p-around_xx-small">
+            <template if:true={showNewButton}>
+                <lightning-button variant="brand"
+                                  label="New Record"
+                                  title="New Record"
+                                  onclick={createNewRecord}>
+                </lightning-button>
+            </template>
+        </lightning-layout-item>
+        <lightning-layout-item class="slds-align-bottom slds-p-around_xx-small">
+            <template if:true={showDeleteButton}>
+                <lightning-button variant="brand"
+                                  label="Delete Selected Records"
+                                  title="Delete Selected Records"
+                                  onclick={deleteSelectedRecords}>
+                </lightning-button>
+            </template>
+        </lightning-layout-item>
+        <lightning-layout-item size="1" class="slds-align-bottom slds-p-around_xx-small">
+            <lightning-combobox name="itemsPerPage" label="Page Length" placeholder={pageSizeLabel} value={pageSize} options={pageSizeOptions} onchange={updateNumberOfItemsPerPage}></lightning-combobox>
+        </lightning-layout-item>
+    </lightning-layout>
+
+    <lightning-datatable
+            key-field="Id"
+            data={currentPage}
+            columns={dataTableColumns}
+            onupdateitemgrid={getTableData}
+            selected-rows={pageSelectedRowIds}
+            onrowselection={addRowToSelectedDataTableRowMap}
+            onrowaction={doSelectedRowAction}
+            show-row-number-column
+            onpicklistchanged={picklistChanged}
+            oncellchange={handleCellChange}
+            sorted-by={rowSelectedForSorting}
+            sorted-direction={sortDirection}
+            onsort={sortRowData}
+            onsave={saveTableDataToServer}>
+    </lightning-datatable >
+
+    <lightning-layout if:true={showPaginationControls}>
+        <lightning-layout-item size="6" class="slds-align_absolute-center slds-p-top_small">
+            <lightning-button-group>
+                <lightning-button variant="neutral" label="First" onclick={firstPage}></lightning-button>
+                <lightning-button variant="neutral" label="Previous" onclick={previousPage}></lightning-button>
+                <div class="slds-m-horizontal_medium slds-align_absolute-center">
+                    {currentPageNumber} of {maxPageNumber}
+                </div>
+                <lightning-button variant="neutral" label="Next" onclick={nextPage}></lightning-button>
+                <lightning-button variant="neutral" label="Last" onclick={lastPage}></lightning-button>
+            </lightning-button-group>
+        </lightning-layout-item>
+    </lightning-layout>
+
+    <template if:true={openModal}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                        <lightning-icon icon-name="utility:close"
+                                        alternative-text="close"
+                                        variant="inverse"
+                                        size="small" ></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">New {relatedObjectLabel}</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <template if:true={showRecordView}>
+                        <lightning-record-form
+                                record-id={viewRowRecordId}
+                                object-api-name={relatedObjectName}
+                                fields={objectViewFields}
+                                onsuccess={handleRecordCreated}
+                                mode="readonly"
+                                oncancel={closeModal}>
+                        </lightning-record-form>
+                    </template>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>

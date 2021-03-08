@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>The various page sizes available for the ultra enhanced related list</description>
+    <fields>
+        <fullName>Object_Name__c</fullName>
+        <description>API name of the object this page option is connected to</description>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <inlineHelpText>API name of the object this page option is connected to</inlineHelpText>
+        <label>Object Name</label>
+        <length>255</length>
+        <required>true</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Page_Size__c</fullName>
+        <description>The amount of records a user can view at once on the related list</description>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <inlineHelpText>The amount of records a user can view at once on the related list</inlineHelpText>
+        <label>Page Size</label>
+        <precision>4</precision>
+        <required>true</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>true</unique>
+    </fields>
+    <label>UE Related List Page Size</label>
+    <pluralLabel>UE Related List Page Sizes</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

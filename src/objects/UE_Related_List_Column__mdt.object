@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>The columns for the ultra enhanced related list</description>
+    <fields>
+        <fullName>Allow_Editing__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Allows the row to be edited in the data table</description>
+        <externalId>false</externalId>
+        <fieldManageability>SubscriberControlled</fieldManageability>
+        <inlineHelpText>Allows the row to be edited in the data table</inlineHelpText>
+        <label>Allow Editing?</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Allow_Search__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>This determines whether a field can be searched on in the table.</description>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <inlineHelpText>Would you like this field to be searchable?</inlineHelpText>
+        <label>Allow Search?</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Allow_Sorting__c</fullName>
+        <defaultValue>true</defaultValue>
+        <description>Allows user to determine whether or not the field can be sorted on the data table</description>
+        <externalId>false</externalId>
+        <fieldManageability>SubscriberControlled</fieldManageability>
+        <inlineHelpText>Allows user to determine whether or not the field can be sorted on the data table</inlineHelpText>
+        <label>Allow Sorting?</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Allow_Text_Wrap__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Allow the text for the column to be wrapped in the datatable</description>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <inlineHelpText>Allow the text for the column to be wrapped in the datatable</inlineHelpText>
+        <label>Allow Text Wrap</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Column_Order__c</fullName>
+        <description>The order the columns will appear in on the related list</description>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <inlineHelpText>The order the columns will appear in on the related list</inlineHelpText>
+        <label>Column Order</label>
+        <length>3</length>
+        <required>true</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Column_Type__c</fullName>
+        <description>The type of data you would like displayed in the column</description>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <inlineHelpText>The type of data you would like displayed in the column</inlineHelpText>
+        <label>Column Type</label>
+        <required>true</required>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>action</fullName>
+                    <default>false</default>
+                    <label>action</label>
+                </value>
+                <value>
+                    <fullName>boolean</fullName>
+                    <default>true</default>
+                    <label>boolean</label>
+                </value>
+                <value>
+                    <fullName>date-local</fullName>
+                    <default>false</default>
+                    <label>date-local</label>
+                </value>
+                <value>
+                    <fullName>decimal</fullName>
+                    <default>false</default>
+                    <label>decimal</label>
+                </value>
+                <value>
+                    <fullName>integer</fullName>
+                    <default>false</default>
+                    <label>integer</label>
+                </value>
+                <value>
+                    <fullName>text</fullName>
+                    <default>false</default>
+                    <label>text</label>
+                </value>
+                <value>
+                    <fullName>url</fullName>
+                    <default>false</default>
+                    <label>url</label>
+                </value>
+                <value>
+                    <fullName>picklist</fullName>
+                    <default>false</default>
+                    <label>picklist</label>
+                </value>
+                <value>
+                    <fullName>lookup</fullName>
+                    <default>false</default>
+                    <label>lookup</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Field_Label__c</fullName>
+        <description>The label you would like on the column for this field</description>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <inlineHelpText>The label you would like on the column for this field</inlineHelpText>
+        <label>Field Label</label>
+        <length>255</length>
+        <required>true</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Field_Name__c</fullName>
+        <description>The developer name for the field</description>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <inlineHelpText>The developer name for the field</inlineHelpText>
+        <label>Field Name</label>
+        <length>200</length>
+        <required>true</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Initial_Column_Width__c</fullName>
+        <description>The initial width of the data table column</description>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <inlineHelpText>The initial width of the data table column</inlineHelpText>
+        <label>Initial Column Width</label>
+        <precision>4</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Object_Developer_Name__c</fullName>
+        <description>The developer name of the object this record is tied to</description>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <inlineHelpText>The developer name of the object this record is tied to</inlineHelpText>
+        <label>Object Developer Name</label>
+        <length>200</length>
+        <required>true</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Record_Type_Name__c</fullName>
+        <defaultValue>&quot;default&quot;</defaultValue>
+        <description>Enter the name of the record type on the object you would like this to be associated with.</description>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <inlineHelpText>Enter the name of the record type on the object you would like this to be associated with.</inlineHelpText>
+        <label>Record Type Name</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Show_on_New_Record_Form__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Should the field show up on the new record form?</description>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <inlineHelpText>Should the field show up on the new record form?</inlineHelpText>
+        <label>Show on New Record Form?</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Show_on_Table__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Should the field show up as a column on the data table?</description>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <inlineHelpText>Should the field show up as a column on the data table?</inlineHelpText>
+        <label>Show on Table?</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Show_on_View_Only_Form__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Would you like the field to show on the view only form?</description>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <inlineHelpText>Would you like the field to show on the view only form?</inlineHelpText>
+        <label>Show on View Only Form</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>URL_Id__c</fullName>
+        <description>The field that holds the Id for the URL for URL columns</description>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <inlineHelpText>The field that holds the Id for the URL for URL columns</inlineHelpText>
+        <label>URL Id</label>
+        <length>200</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>UE Related List Column</label>
+    <pluralLabel>UE Related List Columns</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

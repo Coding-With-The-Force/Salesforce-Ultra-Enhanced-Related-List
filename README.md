@@ -1,6 +1,8 @@
 # Ultra_Enhanced_Related_List
 Allows for a more enhanced related list.
 
+Tutorial video, instructions on how to install and more will be here soon.
+
 Supported Features:
 1) Mass Edits (only works for fields directly on the object currently)
 2) Mass Deletes
@@ -12,8 +14,6 @@ Supported Features:
 8) New record creation (single record at a time)
 9) Changing the amount of records show in the table at once (current limit 1k records).
 10) Communication with Aura Components using the included application aura event 
-
-Tutorial video, instructions on how to install and more will be here soon.
 
 Current limitations being worked through:
 1) Adding picklists and lookups to the table for editing.

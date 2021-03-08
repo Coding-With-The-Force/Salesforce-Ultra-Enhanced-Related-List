@@ -25,3 +25,4 @@ Current code related improvements on the list:
 1) Creating a generic test class
 2) Refactoring the mass update code to make it even more generic and faster
 3) Documentation/Comments
+4) Improving error handling

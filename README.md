@@ -11,6 +11,7 @@ Supported Features:
 7) View only modal
 8) New record creation (single record at a time)
 9) Changing the amount of records show in the table at once (current limit 1k records).
+10) Communication with Aura Components using the included application aura event 
 
 Tutorial video, instructions on how to install and more will be here soon.
 

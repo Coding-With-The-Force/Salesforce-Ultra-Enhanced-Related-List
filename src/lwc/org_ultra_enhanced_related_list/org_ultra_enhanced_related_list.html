@@ -6,7 +6,7 @@
 <template>
     <lightning-layout class="slds-align-bottom" multiple-rows="false">
         <lightning-layout-item class="slds-align-bottom slds-p-around_xx-small" flexibility="auto">
-            <lightning-input type="search" label="Search Table" onchange={searchDataTable}></lightning-input>
+            <lightning-input type="search" label={searchTableLabel} onchange={searchDataTable}></lightning-input>
         </lightning-layout-item>
         <lightning-layout-item class="slds-align-bottom slds-p-around_xx-small">
             <template if:true={showNewButton}>

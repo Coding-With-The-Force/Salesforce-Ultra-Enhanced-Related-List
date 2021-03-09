@@ -3,6 +3,7 @@
  -->
 
 <design:component label="Org Ultra Enhanced Related List">
+	<design:attribute name="searchTableLabel" label="Enter the label for the search bar" description="This is the label that shows up on the search bar for the related list"/>
 	<design:attribute name="relatedObjectName" label="Object API Name" description="Enter object api name for the related list"/>
 	<design:attribute name="relatedFieldName" label="Relationship Field" description="Enter the name of the field that relates this object to the object you're placing this related list on."/>
 	<design:attribute name="showNewButton" label="Show New Button?" description="Show the new record button on the related list?"/>

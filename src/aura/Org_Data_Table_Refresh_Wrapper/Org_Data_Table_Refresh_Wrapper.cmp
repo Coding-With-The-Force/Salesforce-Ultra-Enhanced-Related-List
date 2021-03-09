@@ -1,4 +1,4 @@
-<aura:component implements="flexipage:availableForAllPageTypes,force:hasRecordId,lightning:isUrlAddressable" access="global">
+<aura:component controller="Org_Ultra_Related_List_Controller" implements="flexipage:availableForAllPageTypes,force:hasRecordId,lightning:isUrlAddressable" access="global">
 
 	<aura:attribute name="relatedObjectName" type="String"/>
 	<aura:attribute name="relatedFieldName" type="String"/>
@@ -6,11 +6,15 @@
 	<aura:attribute name="showDeleteButton" type="Boolean"/>
 	<aura:attribute name="editableRelatedRecordField" type="String"/>
 	<aura:attribute name="editableRelatedObjectType" type="String"/>
+	<aura:attribute name="relatedObjectLabel" type="String"/>
+	<aura:attribute name="editableRelatedObjectLabel" type="String"/>
+	<aura:attribute name="searchTableLabel" type="String"/>
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
 	<aura:handler event="force:showToast" action="{!c.doRefresh}"/>
 	<aura:handler event="c:Org_Ultra_Enhanced_Related_List_Notifier" action="{!c.doRefresh}"/>
 
 	<c:org_ultra_enhanced_related_list aura:id="enhanced_list" recordId="{!v.recordId}" relatedObjectName="{!v.relatedObjectName}"
-									   relatedFieldName="{!v.relatedFieldName}"
+									   relatedFieldName="{!v.relatedFieldName}" searchTableLabel="{!v.searchTableLabel}"
 									   showNewButton="{!v.showNewButton}" showDeleteButton="{!v.showDeleteButton}"
 									   editableRelatedRecordField="{!v.editableRelatedRecordField}" editableRelatedObjectType="{!v.editableRelatedObjectType}"/>
 </aura:component>

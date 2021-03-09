@@ -2,11 +2,16 @@ public with sharing class Org_Ultra_Related_List_Controller {
     private static Org_DataTable_Column_Wrapper actionsColumn = new Org_DataTable_Column_Wrapper();
 
     @AuraEnabled
+    public static String getObjectLabel(String objectAPIName){
+        List<Schema.DescribeSObjectResult> describeSobjectsResult = Schema.describeSObjects(new List<String>{objectAPIName}); // this can accept list of strings, we describe only one object here
+        String objectLabel = describeSobjectsResult[0].getLabel();
+        return objectLabel;
+    }
+
+    @AuraEnabled
     public static String getRecordTypeId(Id recordId){
         String recordTypeName = 'default';
         List<SObject> recordList = new List<SObject>();
-        System.debug('This is the record id ::: ' + recordId);
-        System.debug('This is the object name ::: ' + recordId.getSobjectType().getDescribe().getName());
         String query = 'SELECT RecordTypeId FROM ' + recordId.getSobjectType().getDescribe().getName() + ' WHERE Id = :recordId';
         try{
             recordList = Database.query(query);

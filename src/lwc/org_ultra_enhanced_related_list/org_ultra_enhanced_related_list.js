@@ -21,6 +21,7 @@ export default class Org_ultra_enhanced_related_list extends NavigationMixin(Lig
     @api editableRelatedObjectType;
     @api showDeleteButton;
     @api showPaginationControls;
+    @api searchTableLabel
     recordTypeName;
     draftValues = [];
     objectViewFields;

@@ -5,6 +5,7 @@ import getDataTableColumnsFromController from '@salesforce/apex/Org_Ultra_Relate
 import getTableDataFromController from '@salesforce/apex/Org_Ultra_Related_List_Controller.getTableDataController';
 import getViewObjectFieldsFromController from '@salesforce/apex/Org_Ultra_Related_List_Controller.getViewRecordFields';
 import getSearchableFieldsFromController from '@salesforce/apex/Org_Ultra_Related_List_Controller.getSearchableFields';
+import getObjectLabelFromController from '@salesforce/apex/Org_Ultra_Related_List_Controller.getObjectLabel';
 import massDeleteRecordsFromController from '@salesforce/apex/Org_Ultra_Related_List_Controller.massDeleteRecords';
 import saveTableDataToServerController from '@salesforce/apex/Org_Ultra_Related_List_Controller.saveTableDataToServer';
 import getRecordTypeId from '@salesforce/apex/Org_Ultra_Related_List_Controller.getRecordTypeId';
@@ -21,7 +22,9 @@ export default class Org_ultra_enhanced_related_list extends NavigationMixin(Lig
     @api editableRelatedObjectType;
     @api showDeleteButton;
     @api showPaginationControls;
-    @api searchTableLabel
+    @api searchTableLabel;
+
+    objectLabel = '';
     recordTypeName;
     draftValues = [];
     objectViewFields;
@@ -57,11 +60,22 @@ export default class Org_ultra_enhanced_related_list extends NavigationMixin(Lig
             this.recordTypeName = result;
             this.getDataTableColumns();
             this.getTableData();
+            this._getObjectLabel();
             this._getPageSizeOptions();
             this._getViewRecordFields();
             this._getSearchableFields();
         }).catch(error=>{
             console.error('There was a problem retrieving the record type ::: ' + error);
+        });
+    }
+
+    _getObjectLabel(){
+        getObjectLabelFromController({"objectAPIName": this.relatedObjectName}).then(
+            result=>{
+                this.objectLabel = result;
+            }
+        ).catch(error=>{
+            console.error('Error retrieving the object name from the controller ' + JSON.stringify(error));
         });
     }
 
@@ -433,5 +447,13 @@ export default class Org_ultra_enhanced_related_list extends NavigationMixin(Lig
      */
     get currentPage() {
         return this.filteredDataTableRows.slice((this.currentPageNumber - 1) * this.pageSize, this.currentPageNumber * this.pageSize);
+    }
+
+    get returnedRows(){
+        return '(' + this.allDataTableRows.length + ')';
+    }
+
+    get headerLabel(){
+        return this.objectLabel + 's';
     }
 }

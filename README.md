@@ -7,6 +7,10 @@
 
 Are you constantly frustrated by the limitations of related lists? Well this hopes to be the answer for you! With this component you can drop a related list on any page layout and it will allow you to do mass updates, mass deletes, pagination, searching and so much more! Read below for the list of features and limitations.
 
+![ultra enhanced related list image](https://github.com/Coding-With-The-Force/Ultra_Enhanced_Related_List/blob/main/readme_images/Ultra_Enhanced_Related_Lists.PNG?raw=true)
+
+
+
 Tutorial video, instructions on how to install and more will be here soon.
 
 # Supported Features:

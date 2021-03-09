@@ -27,10 +27,11 @@ Tutorial video, instructions on how to install and more will be here soon.
 
 # Features to be added in future releases:
 1) Adding picklists and lookups to the table for editing.
-2) Being able to mass edit fields on related objects from within the table.
-3) Dynamically rendering the checkboxes and table numbers when they aren't wanted.
-4) Dynamically rendering the right icon for different objects instead of just the standard record icon.
-5) Figuring out how to load more than 1k records into the table without SF having a panic attack.
+2) Adding enhanced security (checking to see if someone can delete, if someone can edit, view fields, etc)
+3) Being able to mass edit fields on related objects from within the table.
+4) Dynamically rendering the checkboxes and table numbers when they aren't wanted.
+5) Dynamically rendering the right icon for different objects instead of just the standard record icon.
+6) Figuring out how to load more than 1k records into the table without SF having a panic attack.
 
 # Current code related improvements on the list:
 1) Creating a generic test class

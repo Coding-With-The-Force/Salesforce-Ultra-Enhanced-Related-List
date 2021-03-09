@@ -1,6 +1,6 @@
 # Ultra Enhanced Related List
 
-<a href="https://githubsfdeploy.herokuapp.com?owner=Coding-With-The-Force&repo=Ultra_Enhanced_Related_List&ref=main">
+<a href="https://githubsfdeploy.herokuapp.com?owner=Coding-With-The-Force&repo=Ultra_Enhanced_Related_List&ref=main" target="_blank">
   <img alt="Deploy to Salesforce"
        src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
 </a>

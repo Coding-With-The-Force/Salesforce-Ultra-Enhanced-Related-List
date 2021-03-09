@@ -46,13 +46,11 @@
                     selected-rows={pageSelectedRowIds}
                     onrowselection={addRowToSelectedDataTableRowMap}
                     onrowaction={doSelectedRowAction}
-                    show-row-number-column
-                    onpicklistchanged={picklistChanged}
-                    oncellchange={handleCellChange}
                     sorted-by={rowSelectedForSorting}
                     sorted-direction={sortDirection}
                     onsort={sortRowData}
-                    onsave={saveTableDataToServer}>
+                    onsave={saveTableDataToServer}
+                    show-row-number-column>
             </lightning-datatable >
 
             <lightning-layout if:true={showPaginationControls}>

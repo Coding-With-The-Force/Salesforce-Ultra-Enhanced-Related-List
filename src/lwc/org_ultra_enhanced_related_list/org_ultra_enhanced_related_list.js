@@ -1,4 +1,5 @@
 import { LightningElement, api } from 'lwc';
+import {ShowToastEvent} from "lightning/platformShowToastEvent";
 import {NavigationMixin} from "lightning/navigation";
 import getPageSizeOptionsFromController from '@salesforce/apex/Org_Ultra_Related_List_Controller.getTableSizeOptionsController';
 import getDataTableColumnsFromController from '@salesforce/apex/Org_Ultra_Related_List_Controller.getDataTableColumnsController';
@@ -218,55 +219,6 @@ export default class Org_ultra_enhanced_related_list extends NavigationMixin(Lig
         const selectionObj = manageRowSelection(event, allSelectedRows, checkedIds, pageNumber);
         this.allSelectedRowIds = selectionObj.allRowsWithoutDeSelectedItem;
         this._checkedIds = selectionObj.checkedIds;
-    }
-
-    //handler to handle cell changes & update values in draft values
-    handleCellChange(event) {
-        this.updateDraftValues(event.detail.draftValues[0]);
-    }
-
-    picklistChanged(event) {
-        event.stopPropagation();
-        let dataRecieved = event.detail.data;
-        let updatedItem = { Id: dataRecieved.context, Rating: dataRecieved.value };
-        this.updateDraftValues(updatedItem);
-        this.updateDataValues(updatedItem);
-    }
-
-    updateDraftValues(updateItem) {
-        let draftValueChanged = false;
-        let copyDraftValues = [...this.draftValues];
-        //store changed value to do operations
-        //on save. This will enable inline editing &
-        //show standard cancel & save button
-        copyDraftValues.forEach(item => {
-            if (item.Id === updateItem.Id) {
-                for (let field in updateItem) {
-                    item[field] = updateItem[field];
-                }
-                draftValueChanged = true;
-            }
-        });
-
-        if (draftValueChanged) {
-            this.draftValues = [...copyDraftValues];
-        } else {
-            this.draftValues = [...copyDraftValues, updateItem];
-        }
-    }
-
-    updateDataValues(updateItem) {
-        let copyData = [... this.allDataTableRows];
-        copyData.forEach(item => {
-            if (item.Id === updateItem.Id) {
-                for (let field in updateItem) {
-                    item[field] = updateItem[field];
-                }
-            }
-        });
-
-        //write changes back to original data
-        this.allDataTableRows = [...copyData];
     }
 
     doSelectedRowAction(event)

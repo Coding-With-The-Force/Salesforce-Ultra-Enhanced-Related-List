@@ -38,4 +38,5 @@ Tutorial video, instructions on how to install and more will be here soon.
 2) Refactoring the mass update code to make it even more generic and faster
 3) Documentation/Comments
 4) Improving error handling
+5) Switching CMDT to Entity Definition Lookup instead of text input (Easier setup, but this introduces new limitations to solve however...)
 

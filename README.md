@@ -1,4 +1,10 @@
 # Ultra_Enhanced_Related_List
+
+<a href="https://githubsfdeploy.herokuapp.com">
+  <img alt="Deploy to Salesforce"
+       src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
+</a>
+
 Allows for a more enhanced related list.
 
 Tutorial video, instructions on how to install and more will be here soon.

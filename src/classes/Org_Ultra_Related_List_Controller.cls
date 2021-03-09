@@ -259,14 +259,7 @@ public with sharing class Org_Ultra_Related_List_Controller {
         }
         return selectOptions;
     }
-    @TestVisible
-    private static List<Org_DataTable_Label_Attribute_Details> buildLabelAttributeDetails(String fieldName){
-        List<Org_DataTable_Label_Attribute_Details> labelAttributeDetailsList = new List<Org_DataTable_Label_Attribute_Details>();
-        Org_DataTable_Label_Attribute_Details labelAttributeDetail = new Org_DataTable_Label_Attribute_Details();
-        labelAttributeDetail.fieldName = fieldName;
-        labelAttributeDetailsList.add(labelAttributeDetail);
-        return labelAttributeDetailsList;
-    }
+
     @TestVisible
     private static List<Org_DataTable_RowActions> buildActionAttributeDetails(UE_Related_List_Column__mdt dataColumn){
         List<Org_DataTable_RowActions> rowActionDetailsList = new List<Org_DataTable_RowActions>();
@@ -304,4 +297,7 @@ public with sharing class Org_Ultra_Related_List_Controller {
         sObjectQuery += ' FROM ' + objectType + ' WHERE ' + relatedObjectField + ' = :recordId';
         return sObjectQuery;
     }
+    //Slapped in here so I don't forget methods to evaluate access in an asbtract manner
+    //Schema.SObjectType objType = ((SObject) Type.forName(objectType.newInstance)).getSObjectType();
+    //objType.getDescribe().isDeletable()
 }

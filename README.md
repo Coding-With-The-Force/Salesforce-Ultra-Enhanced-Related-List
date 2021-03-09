@@ -5,7 +5,7 @@
        src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
 </a>
 
-Allows for a more enhanced related list.
+Are you constantly frustrated by the limitations of related lists? Well this hopes to be the answer for you! With this component you can drop a related list on any page layout and it will allow you to do mass updates, mass deletes, pagination, searching and so much more! Read below for the list of features and limitations.
 
 Tutorial video, instructions on how to install and more will be here soon.
 
@@ -32,3 +32,4 @@ Current code related improvements on the list:
 2) Refactoring the mass update code to make it even more generic and faster
 3) Documentation/Comments
 4) Improving error handling
+

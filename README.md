@@ -21,11 +21,12 @@ Supported Features:
 9) Changing the amount of records show in the table at once (current limit 1k records).
 10) Communication with Aura Components using the included application aura event 
 
-Current limitations being worked through:
+Features to be added in future releases:
 1) Adding picklists and lookups to the table for editing.
 2) Being able to mass edit fields on related objects from within the table.
 3) Dynamically rendering the checkboxes and table numbers when they aren't wanted.
-4) Figuring out how to load more than 1k records into the table without SF having a panic attack.
+4) Dynamically rendering the right icon for different objects instead of just the standard record icon.
+5) Figuring out how to load more than 1k records into the table without SF having a panic attack.
 
 Current code related improvements on the list:
 1) Creating a generic test class

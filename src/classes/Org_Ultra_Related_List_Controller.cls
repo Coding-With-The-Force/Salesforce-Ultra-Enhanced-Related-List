@@ -300,4 +300,5 @@ public with sharing class Org_Ultra_Related_List_Controller {
     //Slapped in here so I don't forget methods to evaluate access in an asbtract manner
     //Schema.SObjectType objType = ((SObject) Type.forName(objectType.newInstance)).getSObjectType();
     //objType.getDescribe().isDeletable()
+    //MyRecord.getSobjectType().getDescribe().isDeletable()
 }

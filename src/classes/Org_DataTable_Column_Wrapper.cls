@@ -10,5 +10,7 @@ public with sharing class Org_DataTable_Column_Wrapper {
     @AuraEnabled
     public boolean editable;
     @AuraEnabled
+    public Org_DataTable_CellAttributes_Wrapper cellAttributes;
+    @AuraEnabled
     public Org_DataTable_TypeAttributes_Wrapper typeAttributes;
 }

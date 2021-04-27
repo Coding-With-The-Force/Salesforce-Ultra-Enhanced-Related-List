@@ -1,6 +1,7 @@
 import { LightningElement, api } from 'lwc';
 import {ShowToastEvent} from "lightning/platformShowToastEvent";
 import {NavigationMixin} from "lightning/navigation";
+import {loadStyle} from "lightning/platformResourceLoader";
 import getPageSizeOptionsFromController from '@salesforce/apex/Org_Ultra_Related_List_Controller.getTableSizeOptionsController';
 import getDataTableColumnsFromController from '@salesforce/apex/Org_Ultra_Related_List_Controller.getDataTableColumnsController';
 import getTableDataFromController from '@salesforce/apex/Org_Ultra_Related_List_Controller.getTableDataController';
@@ -10,6 +11,8 @@ import getObjectLabelFromController from '@salesforce/apex/Org_Ultra_Related_Lis
 import massDeleteRecordsFromController from '@salesforce/apex/Org_Ultra_Related_List_Controller.massDeleteRecords';
 import saveTableDataToServerController from '@salesforce/apex/Org_Ultra_Related_List_Controller.saveTableDataToServer';
 import getRecordTypeId from '@salesforce/apex/Org_Ultra_Related_List_Controller.getRecordTypeId';
+import orgUltraEnhancedRelatedListStyle from '@salesforce/resourceUrl/Org_Ultra_Related_List_Styles';
+import getColumnStylesFromController from '@salesforce/apex/Org_Ultra_Related_List_Controller.getColumnStyles';
 import {deleteRecord} from 'lightning/uiRecordApi';
 import {sortRows, showToast, searchTable, manageRowSelection} from "c/datatableUtils";
 
@@ -32,6 +35,7 @@ export default class Org_ultra_enhanced_related_list extends NavigationMixin(Lig
     openModal = false;
     showRecordView = false;
     viewRowRecordId = '';
+    columnStyleList = [];
 
     sortDirection = 'asc';
     rowSelectedForSorting = 'Id';
@@ -53,18 +57,16 @@ export default class Org_ultra_enhanced_related_list extends NavigationMixin(Lig
 
     connectedCallback()
     {
-        this._getRecordTypeId();
+        loadStyle(this, orgUltraEnhancedRelatedListStyle).then(() => {
+            this._getRecordTypeId();
+        });
+
     }
 
     _getRecordTypeId(){
         getRecordTypeId({"recordId": this.recordId}).then(result=>{
             this.recordTypeName = result;
             this.getDataTableColumns();
-            this.getTableData();
-            this._getObjectLabel();
-            this._getPageSizeOptions();
-            this._getViewRecordFields();
-            this._getSearchableFields();
         }).catch(error=>{
             console.error('There was a problem retrieving the record type ::: ' + error);
         });
@@ -84,9 +86,26 @@ export default class Org_ultra_enhanced_related_list extends NavigationMixin(Lig
     {
         getDataTableColumnsFromController({"objectType": this.relatedObjectName, "recordTypeName": this.recordTypeName}).then(
             result =>{
-                this.dataTableColumns = result;
+                const cssClassRegex = new RegExp('cssclass', 'g');
+                let fixedColumns = JSON.stringify(result).replace(cssClassRegex, 'class');
+                console.log('These are the data table columns ::: ' + fixedColumns);
+                this.dataTableColumns = JSON.parse(fixedColumns);
+                this.getColumnStyles();
             }).catch(error => {
             console.error('Error retrieving data table columns from the controller ' + JSON.stringify(error));
+        });
+    }
+
+    getColumnStyles(){
+        getColumnStylesFromController({"objectType": this.relatedObjectName, "recordTypeName": this.recordTypeName}).then(result =>{
+            this.columnStyleList = result;
+            this.getTableData();
+            this._getObjectLabel();
+            this._getPageSizeOptions();
+            this._getViewRecordFields();
+            this._getSearchableFields();
+        }).catch(error=>{
+           console.error('Error retrieving data table styles from the controller ' + JSON.stringify(error));
         });
     }
 
@@ -96,6 +115,7 @@ export default class Org_ultra_enhanced_related_list extends NavigationMixin(Lig
             result =>{
                 this.allDataTableRows = this._createFlattenedData(result);
                 this.filteredDataTableRows = this.allDataTableRows;
+                console.log('These are the table rows ::: ' + JSON.stringify(this.filteredDataTableRows));
                 this.showPaginationControls = (this.filteredDataTableRows == undefined || this.filteredDataTableRows.length <= this.pageSize) ? false : true;
             }).catch(error => {
             console.error('Error retrieving data from the controller ' + JSON.stringify(error));
@@ -115,10 +135,11 @@ export default class Org_ultra_enhanced_related_list extends NavigationMixin(Lig
             const flattenedRow = {}
             // get keys of a single row — Name, Phone, LeadSource and etc
             let rowKeys = Object.keys(row);
-
+            let rowValues = Object.values(row);
             rowKeys.forEach((rowKey) => {
                 //get the value of each key of a single row. John, 999-999-999, Web and etc
                 const singleNodeValue = row[rowKey];
+                console.log('This is the row key ::: ' + rowKey + ' ::: This is the single node value ::: ' + JSON.stringify(singleNodeValue) + ' ::: This is the value ::: ' + JSON.stringify(rowValues));
                 //check if the value is a node(object) or a string
                 if (singleNodeValue.constructor === Object) {
                     //if it's an object flatten it
@@ -127,13 +148,27 @@ export default class Org_ultra_enhanced_related_list extends NavigationMixin(Lig
                     //if it’s a normal string push it to the flattenedRow array
                     flattenedRow[rowKey] = singleNodeValue;
                 }
+                this._determineRowStyles(flattenedRow, row, rowKey);
             });
             dataArray.push(flattenedRow);
         });
         return dataArray
     }
 
-    _flattenRow (nodeValue, flattenedRow, nodeName){
+    _determineRowStyles(flattenedRow, row, rowKey){
+        this.columnStyleList.forEach(style =>{
+            if(style.UE_Related_List_Column_Link__r.Field_Name__c == rowKey){
+                if(style.Comparison_Criteria__c == 'equal to' && row[rowKey] == style.Comparison_Value__c){
+                    flattenedRow[this.relatedObjectName + this.recordTypeName + rowKey] = style.CSS_Class_Name__c;
+                }
+                else if(style.Comparison_Criteria__c == 'not equal to' && row[rowKey] != style.Comparison_Value__c){
+                    flattenedRow[this.relatedObjectName + this.recordTypeName + rowKey] = style.CSS_Class_Name__c;
+                }
+            }
+        });
+    }
+
+    _flattenRow(nodeValue, flattenedRow, nodeName){
         let rowKeys = Object.keys(nodeValue);
         rowKeys.forEach((key) => {
             let finalKey = nodeName + '.'+ key;

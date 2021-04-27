@@ -9,6 +9,15 @@ public with sharing class Org_Ultra_Related_List_Controller {
     }
 
     @AuraEnabled
+    public static List<UE_Related_List_Style__mdt> getColumnStyles(String objectType, String recordTypeName){
+        List<UE_Related_List_Column__mdt> columnMetadata = getRelatedListColumnMetadata(objectType, recordTypeName);
+        List<UE_Related_List_Style__mdt> columnStylesList = [SELECT Id, Comparison_Criteria__c, Comparison_Value__c, CSS_Class_Name__c, UE_Related_List_Column_Link__c,
+                UE_Related_List_Column_Link__r.Field_Name__c FROM UE_Related_List_Style__mdt
+                WHERE UE_Related_List_Column_Link__c IN : columnMetadata];
+        return columnStylesList;
+    }
+
+    @AuraEnabled
     public static String getRecordTypeId(Id recordId){
         String recordTypeName = 'default';
         List<SObject> recordList = new List<SObject>();
@@ -178,8 +187,17 @@ public with sharing class Org_Ultra_Related_List_Controller {
     @TestVisible
     private static List<Org_DataTable_Column_Wrapper> buildColumnData(List<UE_Related_List_Column__mdt> columnMetadata)
     {
+        List<UE_Related_List_Style__mdt> columnStylesList = [SELECT Id, Comparison_Criteria__c, Comparison_Value__c, CSS_Class_Name__c, UE_Related_List_Column_Link__c,
+                                                              UE_Related_List_Column_Link__r.Field_Name__c FROM UE_Related_List_Style__mdt
+                                                              WHERE UE_Related_List_Column_Link__c IN : columnMetadata];
+        Map<Id, UE_Related_List_Style__mdt> styleByColumnMap = new Map<Id, UE_Related_List_Style__mdt>();
+        for(UE_Related_List_Style__mdt style: columnStylesList){
+            styleByColumnMap.put(style.UE_Related_List_Column_Link__c, style);
+        }
+
         List<Org_DataTable_Column_Wrapper> dataColumnObjectList = new List<Org_DataTable_Column_Wrapper>();
         for(UE_Related_List_Column__mdt column: columnMetadata){
+            UE_Related_List_Style__mdt style = styleByColumnMap.get(column.Id);
             if(!column.Show_on_Table__c){
                 continue;
             }
@@ -197,6 +215,9 @@ public with sharing class Org_Ultra_Related_List_Controller {
             }
             else {
                 dataColumn.fieldName = column.Field_Name__c;
+            }
+            if(style != null){
+                dataColumn.cellAttributes = buildCellAttributes(column);
             }
             dataColumn.typeAttributes = buildColumnTypeAttributes(column);
             dataColumnObjectList.add(dataColumn);
@@ -243,6 +264,16 @@ public with sharing class Org_Ultra_Related_List_Controller {
 
         return columnTypeAttributesList;
     }
+
+    @TestVisible
+    private static Org_DataTable_CellAttributes_Wrapper buildCellAttributes(UE_Related_List_Column__mdt columnMetadata){
+        Org_DataTable_CellAttributes_Wrapper cellAttributes = new Org_DataTable_CellAttributes_Wrapper();
+        Org_DataTable_Class className = new Org_DataTable_Class();
+        className.fieldName = columnMetadata.Object_Developer_Name__c + columnMetadata.Record_Type_Name__c +columnMetadata.Field_Name__c;
+        cellAttributes.cssclass = className;
+        return cellAttributes;
+    }
+
     @TestVisible
     private static List<Org_DataTable_Select_Option> getPicklistOptions(String objectName, String fieldName){
         List<Org_DataTable_Select_Option> selectOptions = new List<Org_DataTable_Select_Option>();
@@ -269,6 +300,7 @@ public with sharing class Org_Ultra_Related_List_Controller {
         rowActionDetailsList.add(rowActionDetail);
         return rowActionDetailsList;
     }
+
     @TestVisible
     private static String buildObjectQuery(String objectType, String relatedObjectField, String recordTypeName){
         String sObjectQuery = '';

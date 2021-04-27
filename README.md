@@ -23,7 +23,8 @@ Tutorial video, instructions on how to install and more will be here soon.
 7) View only modal
 8) New record creation (single record at a time)
 9) Changing the amount of records show in the table at once (current limit 1k records).
-10) Communication with Aura Components using the included application aura event 
+10) Communication with Aura Components using the included application aura event.
+11) Dynamic column styles based on matching criteria. Basically you can change the css for individual values in a table column. 
 
 # Features to be added in future releases:
 1) Adding picklists and lookups to the table for editing.

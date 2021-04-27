@@ -164,6 +164,18 @@ export default class Org_ultra_enhanced_related_list extends NavigationMixin(Lig
                 else if(style.Comparison_Criteria__c == 'not equal to' && row[rowKey] != style.Comparison_Value__c){
                     flattenedRow[this.relatedObjectName + this.recordTypeName + rowKey] = style.CSS_Class_Name__c;
                 }
+                else if(style.Comparison_Criteria__c == 'greater than' && row[rowKey] < style.Comparison_Value__c){
+                    flattenedRow[this.relatedObjectName + this.recordTypeName + rowKey] = style.CSS_Class_Name__c;
+                }
+                else if(style.Comparison_Criteria__c == 'greater than or equal to' && row[rowKey] <= style.Comparison_Value__c){
+                    flattenedRow[this.relatedObjectName + this.recordTypeName + rowKey] = style.CSS_Class_Name__c;
+                }
+                else if(style.Comparison_Criteria__c == 'less than' && row[rowKey] > style.Comparison_Value__c){
+                    flattenedRow[this.relatedObjectName + this.recordTypeName + rowKey] = style.CSS_Class_Name__c;
+                }
+                else if(style.Comparison_Criteria__c == 'less than or equal to' && row[rowKey] >= style.Comparison_Value__c){
+                    flattenedRow[this.relatedObjectName + this.recordTypeName + rowKey] = style.CSS_Class_Name__c;
+                }
             }
         });
     }

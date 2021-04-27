@@ -11,7 +11,8 @@ public with sharing class Org_Ultra_Related_List_Controller {
     @AuraEnabled
     public static List<UE_Related_List_Style__mdt> getColumnStyles(String objectType, String recordTypeName){
         List<UE_Related_List_Column__mdt> columnMetadata = getRelatedListColumnMetadata(objectType, recordTypeName);
-        List<UE_Related_List_Style__mdt> columnStylesList = [SELECT Id, Comparison_Criteria__c, Comparison_Value__c, CSS_Class_Name__c, UE_Related_List_Column_Link__c,
+        List<UE_Related_List_Style__mdt> columnStylesList = [SELECT Id, Comparison_Criteria__c, Field_To_Compare__c, Field_To_Compare__r.Field_Name__c,
+                Comparison_Value__c, CSS_Class_Name__c, UE_Related_List_Column_Link__c,
                 UE_Related_List_Column_Link__r.Field_Name__c FROM UE_Related_List_Style__mdt
                 WHERE UE_Related_List_Column_Link__c IN : columnMetadata];
         return columnStylesList;
@@ -187,9 +188,11 @@ public with sharing class Org_Ultra_Related_List_Controller {
     @TestVisible
     private static List<Org_DataTable_Column_Wrapper> buildColumnData(List<UE_Related_List_Column__mdt> columnMetadata)
     {
-        List<UE_Related_List_Style__mdt> columnStylesList = [SELECT Id, Comparison_Criteria__c, Comparison_Value__c, CSS_Class_Name__c, UE_Related_List_Column_Link__c,
-                                                              UE_Related_List_Column_Link__r.Field_Name__c FROM UE_Related_List_Style__mdt
-                                                              WHERE UE_Related_List_Column_Link__c IN : columnMetadata];
+        List<UE_Related_List_Style__mdt> columnStylesList = [SELECT Id, Comparison_Criteria__c, Field_To_Compare__c, Field_To_Compare__r.Field_Name__c,
+                                                             Comparison_Value__c, CSS_Class_Name__c, UE_Related_List_Column_Link__c,
+                                                             UE_Related_List_Column_Link__r.Field_Name__c FROM UE_Related_List_Style__mdt
+                                                             WHERE UE_Related_List_Column_Link__c IN : columnMetadata];
+
         Map<Id, UE_Related_List_Style__mdt> styleByColumnMap = new Map<Id, UE_Related_List_Style__mdt>();
         for(UE_Related_List_Style__mdt style: columnStylesList){
             styleByColumnMap.put(style.UE_Related_List_Column_Link__c, style);

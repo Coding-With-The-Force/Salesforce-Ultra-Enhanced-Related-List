@@ -157,23 +157,23 @@ export default class Org_ultra_enhanced_related_list extends NavigationMixin(Lig
 
     _determineRowStyles(flattenedRow, row, rowKey){
         this.columnStyleList.forEach(style =>{
-            if(style.UE_Related_List_Column_Link__r.Field_Name__c == rowKey){
-                if(style.Comparison_Criteria__c == 'equal to' && row[rowKey] == style.Comparison_Value__c){
+            if(style.UE_Related_List_Column_Link__r.Field_Name__c === rowKey && row[style.Field_To_Compare__r.Field_Name__c] != null){
+                if(style.Comparison_Criteria__c === 'equal to' && row[style.Field_To_Compare__r.Field_Name__c] === style.Comparison_Value__c){
                     flattenedRow[this.relatedObjectName + this.recordTypeName + rowKey] = style.CSS_Class_Name__c;
                 }
-                else if(style.Comparison_Criteria__c == 'not equal to' && row[rowKey] != style.Comparison_Value__c){
+                else if(style.Comparison_Criteria__c === 'not equal to' && row[style.Field_To_Compare__r.Field_Name__c] !== style.Comparison_Value__c){
                     flattenedRow[this.relatedObjectName + this.recordTypeName + rowKey] = style.CSS_Class_Name__c;
                 }
-                else if(style.Comparison_Criteria__c == 'greater than' && row[rowKey] < style.Comparison_Value__c){
+                else if(style.Comparison_Criteria__c == 'greater than' && row[style.Field_To_Compare__r.Field_Name__c] < style.Comparison_Value__c){
                     flattenedRow[this.relatedObjectName + this.recordTypeName + rowKey] = style.CSS_Class_Name__c;
                 }
-                else if(style.Comparison_Criteria__c == 'greater than or equal to' && row[rowKey] <= style.Comparison_Value__c){
+                else if(style.Comparison_Criteria__c == 'greater than or equal to' && row[style.Field_To_Compare__r.Field_Name__c] <= style.Comparison_Value__c){
                     flattenedRow[this.relatedObjectName + this.recordTypeName + rowKey] = style.CSS_Class_Name__c;
                 }
-                else if(style.Comparison_Criteria__c == 'less than' && row[rowKey] > style.Comparison_Value__c){
+                else if(style.Comparison_Criteria__c == 'less than' && row[style.Field_To_Compare__r.Field_Name__c] > style.Comparison_Value__c){
                     flattenedRow[this.relatedObjectName + this.recordTypeName + rowKey] = style.CSS_Class_Name__c;
                 }
-                else if(style.Comparison_Criteria__c == 'less than or equal to' && row[rowKey] >= style.Comparison_Value__c){
+                else if(style.Comparison_Criteria__c == 'less than or equal to' && row[style.Field_To_Compare__r.Field_Name__c] >= style.Comparison_Value__c){
                     flattenedRow[this.relatedObjectName + this.recordTypeName + rowKey] = style.CSS_Class_Name__c;
                 }
             }

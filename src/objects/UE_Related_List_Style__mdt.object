@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>This houses the custom styles and their condition criteria for your related lists</description>
+    <fields>
+        <fullName>CSS_Class_Name__c</fullName>
+        <description>Name of the css class in the Org_Ultra_Related_List_Styles css static resource we should assign to this column.</description>
+        <externalId>false</externalId>
+        <fieldManageability>SubscriberControlled</fieldManageability>
+        <inlineHelpText>Name of the css class in the Org_Ultra_Related_List_Styles css static resource we should assign to this column.</inlineHelpText>
+        <label>CSS Class Name</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Comparison_Criteria__c</fullName>
+        <description>How would you like your criteria to be evaluated at run time?</description>
+        <externalId>false</externalId>
+        <fieldManageability>SubscriberControlled</fieldManageability>
+        <inlineHelpText>How would you like your criteria to be evaluated at run time?</inlineHelpText>
+        <label>Comparison Operator</label>
+        <required>false</required>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>less than</fullName>
+                    <default>true</default>
+                    <label>less than</label>
+                </value>
+                <value>
+                    <fullName>less than or equal to</fullName>
+                    <default>false</default>
+                    <label>less than or equal to</label>
+                </value>
+                <value>
+                    <fullName>greater than</fullName>
+                    <default>false</default>
+                    <label>greater than</label>
+                </value>
+                <value>
+                    <fullName>greater than or equal to</fullName>
+                    <default>false</default>
+                    <label>greater than or equal to</label>
+                </value>
+                <value>
+                    <fullName>equal to</fullName>
+                    <default>false</default>
+                    <label>equal to</label>
+                </value>
+                <value>
+                    <fullName>not equal to</fullName>
+                    <default>false</default>
+                    <label>not equal to</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Comparison_Value__c</fullName>
+        <description>This is the value we should compare on the linked columns field to decided to apply the style.</description>
+        <externalId>false</externalId>
+        <fieldManageability>SubscriberControlled</fieldManageability>
+        <inlineHelpText>This is the value we should compare on the linked columns field to decided to apply the style.</inlineHelpText>
+        <label>Comparison Value</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Field_To_Compare__c</fullName>
+        <description>This is a link to the column field you would like the comparison to actually take place on.</description>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <inlineHelpText>This is a link to the column field you would like the comparison to actually take place on.</inlineHelpText>
+        <label>Field To Compare</label>
+        <referenceTo>UE_Related_List_Column__mdt</referenceTo>
+        <relationshipLabel>UE Related List Styles (Field To Compare)</relationshipLabel>
+        <relationshipName>UE_Related_List_Styles1</relationshipName>
+        <required>false</required>
+        <type>MetadataRelationship</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>UE_Related_List_Column_Link__c</fullName>
+        <description>This links your style criteria to a column</description>
+        <externalId>false</externalId>
+        <fieldManageability>SubscriberControlled</fieldManageability>
+        <inlineHelpText>This links your style criteria to a column</inlineHelpText>
+        <label>UE Related List Column Link</label>
+        <referenceTo>UE_Related_List_Column__mdt</referenceTo>
+        <relationshipLabel>UE Related List Styles</relationshipLabel>
+        <relationshipName>UE_Related_List_Styles</relationshipName>
+        <required>false</required>
+        <type>MetadataRelationship</type>
+        <unique>false</unique>
+    </fields>
+    <label>UE Related List Style</label>
+    <pluralLabel>UE Related List Styles</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

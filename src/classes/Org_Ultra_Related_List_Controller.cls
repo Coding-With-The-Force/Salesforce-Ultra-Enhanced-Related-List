@@ -14,7 +14,7 @@ public with sharing class Org_Ultra_Related_List_Controller {
         List<UE_Related_List_Style__mdt> columnStylesList = [SELECT Id, Comparison_Criteria__c, Field_To_Compare__c, Field_To_Compare__r.Field_Name__c,
                 Comparison_Value__c, CSS_Class_Name__c, UE_Related_List_Column_Link__c,
                 UE_Related_List_Column_Link__r.Field_Name__c FROM UE_Related_List_Style__mdt
-                WHERE UE_Related_List_Column_Link__c IN : columnMetadata];
+        WHERE UE_Related_List_Column_Link__c IN : columnMetadata];
         return columnStylesList;
     }
 
@@ -63,7 +63,7 @@ public with sharing class Org_Ultra_Related_List_Controller {
         List<UE_Related_List_Column__mdt> columnMetadata = getRelatedListColumnMetadata(objectType, recordTypeName);
 
         if(!columnMetadata.isEmpty()){
-            columnData = buildColumnData(columnMetadata);
+            columnData = buildColumnData(columnMetadata, recordTypeName);
         }
 
         return columnData;
@@ -186,12 +186,12 @@ public with sharing class Org_Ultra_Related_List_Controller {
         return dataColumns;
     }
     @TestVisible
-    private static List<Org_DataTable_Column_Wrapper> buildColumnData(List<UE_Related_List_Column__mdt> columnMetadata)
+    private static List<Org_DataTable_Column_Wrapper> buildColumnData(List<UE_Related_List_Column__mdt> columnMetadata, String recordTypeName)
     {
         List<UE_Related_List_Style__mdt> columnStylesList = [SELECT Id, Comparison_Criteria__c, Field_To_Compare__c, Field_To_Compare__r.Field_Name__c,
-                                                             Comparison_Value__c, CSS_Class_Name__c, UE_Related_List_Column_Link__c,
-                                                             UE_Related_List_Column_Link__r.Field_Name__c FROM UE_Related_List_Style__mdt
-                                                             WHERE UE_Related_List_Column_Link__c IN : columnMetadata];
+                Comparison_Value__c, CSS_Class_Name__c, UE_Related_List_Column_Link__c,
+                UE_Related_List_Column_Link__r.Field_Name__c FROM UE_Related_List_Style__mdt
+        WHERE UE_Related_List_Column_Link__c IN : columnMetadata];
 
         Map<Id, UE_Related_List_Style__mdt> styleByColumnMap = new Map<Id, UE_Related_List_Style__mdt>();
         for(UE_Related_List_Style__mdt style: columnStylesList){
@@ -216,11 +216,11 @@ public with sharing class Org_Ultra_Related_List_Controller {
             if(column.Column_Type__c == 'url'){
                 dataColumn.fieldName = column.URL_Id__c;
             }
-            else {
+            else if (column.Column_Type__c != 'image'){
                 dataColumn.fieldName = column.Field_Name__c;
             }
             if(style != null){
-                dataColumn.cellAttributes = buildCellAttributes(column);
+                dataColumn.cellAttributes = buildCellAttributes(column, recordTypeName);
             }
             dataColumn.typeAttributes = buildColumnTypeAttributes(column);
             dataColumnObjectList.add(dataColumn);
@@ -269,10 +269,10 @@ public with sharing class Org_Ultra_Related_List_Controller {
     }
 
     @TestVisible
-    private static Org_DataTable_CellAttributes_Wrapper buildCellAttributes(UE_Related_List_Column__mdt columnMetadata){
+    private static Org_DataTable_CellAttributes_Wrapper buildCellAttributes(UE_Related_List_Column__mdt columnMetadata, String recordTypeName){
         Org_DataTable_CellAttributes_Wrapper cellAttributes = new Org_DataTable_CellAttributes_Wrapper();
         Org_DataTable_Class className = new Org_DataTable_Class();
-        className.fieldName = columnMetadata.Object_Developer_Name__c + columnMetadata.Record_Type_Name__c +columnMetadata.Field_Name__c;
+        className.fieldName = columnMetadata.Object_Developer_Name__c + recordTypeName +columnMetadata.Field_Name__c;
         cellAttributes.cssclass = className;
         return cellAttributes;
     }

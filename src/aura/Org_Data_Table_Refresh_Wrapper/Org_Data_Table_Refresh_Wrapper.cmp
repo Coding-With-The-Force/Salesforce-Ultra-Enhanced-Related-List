@@ -10,8 +10,8 @@
 	<aura:attribute name="editableRelatedObjectLabel" type="String"/>
 	<aura:attribute name="searchTableLabel" type="String"/>
 	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
-	<aura:handler event="force:showToast" action="{!c.doRefresh}"/>
-	<aura:handler event="c:Org_Ultra_Enhanced_Related_List_Notifier" action="{!c.doRefresh}"/>
+	<aura:handler event="force:showToast" action="{!c.doToastRefresh}"/>
+	<aura:handler event="c:Org_Ultra_Enhanced_Related_List_Notifier" action="{!c.doTableRefresh}"/>
 
 	<c:org_ultra_enhanced_related_list aura:id="enhanced_list" recordId="{!v.recordId}" relatedObjectName="{!v.relatedObjectName}"
 									   relatedFieldName="{!v.relatedFieldName}" searchTableLabel="{!v.searchTableLabel}"

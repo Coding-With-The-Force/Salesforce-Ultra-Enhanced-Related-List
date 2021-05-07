@@ -8,11 +8,10 @@
 		helper.getObjectLabel(component, component.get("v.editableRelatedObjectType"), "v.editableRelatedObjectLabel");
 	},
 
-	doRefresh : function(component, event, helper) {
+	doToastRefresh : function(component, event, helper) {
 		const relatedObjectName = component.get("v.editableRelatedObjectLabel").toUpperCase();
 		const objectName = component.get("v.relatedObjectLabel").toUpperCase();
 		let templateData = event.getParam("messageTemplateData");
-		//console.log('These are the params ::: ' + JSON.stringify(event.getParams()));
 		console.log('This is the template data ::: ' + templateData);
 		if(templateData) {
 			templateData.forEach(message => {
@@ -22,5 +21,9 @@
 				}
 			});
 		}
+	},
+
+	doTableRefresh : function(component, event, helper){
+		component.find("enhanced_list").getTableData();
 	}
 })

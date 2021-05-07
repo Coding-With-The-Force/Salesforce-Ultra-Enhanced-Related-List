@@ -105,7 +105,7 @@ export default class Org_ultra_enhanced_related_list extends NavigationMixin(Lig
             this._getViewRecordFields();
             this._getSearchableFields();
         }).catch(error=>{
-           console.error('Error retrieving data table styles from the controller ' + JSON.stringify(error));
+            console.error('Error retrieving data table styles from the controller ' + JSON.stringify(error));
         });
     }
 
@@ -113,7 +113,8 @@ export default class Org_ultra_enhanced_related_list extends NavigationMixin(Lig
     {
         getTableDataFromController({"recordId": this.recordId, "relatedObjectField": this.relatedFieldName, "objectType": this.relatedObjectName, "recordTypeName": this.recordTypeName}).then(
             result =>{
-                this.allDataTableRows = this._createFlattenedData(result);
+                let flattenedResults = this._createFlattenedData(result);
+                this.allDataTableRows = this._determineRowStyles(flattenedResults);
                 this.filteredDataTableRows = this.allDataTableRows;
                 console.log('These are the table rows ::: ' + JSON.stringify(this.filteredDataTableRows));
                 this.showPaginationControls = (this.filteredDataTableRows == undefined || this.filteredDataTableRows.length <= this.pageSize) ? false : true;
@@ -130,50 +131,66 @@ export default class Org_ultra_enhanced_related_list extends NavigationMixin(Lig
     }
 
     _createFlattenedData(returnedData){
+        console.log('Making flattened data ::: ');
         let dataArray = [];
         returnedData.forEach(row => {
             const flattenedRow = {}
             // get keys of a single row — Name, Phone, LeadSource and etc
             let rowKeys = Object.keys(row);
-            let rowValues = Object.values(row);
             rowKeys.forEach((rowKey) => {
                 //get the value of each key of a single row. John, 999-999-999, Web and etc
                 const singleNodeValue = row[rowKey];
-                console.log('This is the row key ::: ' + rowKey + ' ::: This is the single node value ::: ' + JSON.stringify(singleNodeValue) + ' ::: This is the value ::: ' + JSON.stringify(rowValues));
                 //check if the value is a node(object) or a string
                 if (singleNodeValue.constructor === Object) {
                     //if it's an object flatten it
-                    this._flattenRow(singleNodeValue, flattenedRow, rowKey)
+                    this._flattenRow(singleNodeValue, flattenedRow, rowKey);
                 } else {
                     //if it’s a normal string push it to the flattenedRow array
                     flattenedRow[rowKey] = singleNodeValue;
                 }
-                this._determineRowStyles(flattenedRow, row, rowKey);
             });
             dataArray.push(flattenedRow);
         });
         return dataArray
     }
 
-    _determineRowStyles(flattenedRow, row, rowKey){
+    _determineRowStyles(returnedData){
+        console.log('Determining row styles');
+        let dataArray = [];
+        returnedData.forEach(row => {
+            const flattenedRow = {}
+            // get keys of a single row — Name, Phone, LeadSource and etc
+            let rowKeys = Object.keys(row);
+            rowKeys.forEach((rowKey) => {
+                flattenedRow[rowKey] = row[rowKey];
+                this._assignRowStyles(flattenedRow, row, rowKey);
+            });
+            dataArray.push(flattenedRow);
+        });
+        return dataArray
+    }
+
+    _assignRowStyles(flattenedRow, row, rowKey){
         this.columnStyleList.forEach(style =>{
             if(style.UE_Related_List_Column_Link__r.Field_Name__c === rowKey && row[style.Field_To_Compare__r.Field_Name__c] != null){
-                if(style.Comparison_Criteria__c === 'equal to' && row[style.Field_To_Compare__r.Field_Name__c] === style.Comparison_Value__c){
+                console.log('This is the row value ::: ' + row[style.Field_To_Compare__r.Field_Name__c] + '  ::: This is the style value ::: ' + style.Comparison_Value__c + ' ::: comparison criteria ::: ' + style.Comparison_Criteria__c);
+                if(style.Comparison_Criteria__c === 'equal to' && String(row[style.Field_To_Compare__r.Field_Name__c]) === style.Comparison_Value__c){
+                    console.log('We assigned a new style');
                     flattenedRow[this.relatedObjectName + this.recordTypeName + rowKey] = style.CSS_Class_Name__c;
                 }
-                else if(style.Comparison_Criteria__c === 'not equal to' && row[style.Field_To_Compare__r.Field_Name__c] !== style.Comparison_Value__c){
+                else if(style.Comparison_Criteria__c === 'not equal to' && String(row[style.Field_To_Compare__r.Field_Name__c]) !== style.Comparison_Value__c){
                     flattenedRow[this.relatedObjectName + this.recordTypeName + rowKey] = style.CSS_Class_Name__c;
                 }
-                else if(style.Comparison_Criteria__c == 'greater than' && row[style.Field_To_Compare__r.Field_Name__c] < style.Comparison_Value__c){
+                else if(style.Comparison_Criteria__c === 'greater than' && row[style.Field_To_Compare__r.Field_Name__c] < style.Comparison_Value__c){
                     flattenedRow[this.relatedObjectName + this.recordTypeName + rowKey] = style.CSS_Class_Name__c;
                 }
-                else if(style.Comparison_Criteria__c == 'greater than or equal to' && row[style.Field_To_Compare__r.Field_Name__c] <= style.Comparison_Value__c){
+                else if(style.Comparison_Criteria__c === 'greater than or equal to' && row[style.Field_To_Compare__r.Field_Name__c] <= style.Comparison_Value__c){
                     flattenedRow[this.relatedObjectName + this.recordTypeName + rowKey] = style.CSS_Class_Name__c;
                 }
-                else if(style.Comparison_Criteria__c == 'less than' && row[style.Field_To_Compare__r.Field_Name__c] > style.Comparison_Value__c){
+                else if(style.Comparison_Criteria__c === 'less than' && row[style.Field_To_Compare__r.Field_Name__c] > style.Comparison_Value__c){
                     flattenedRow[this.relatedObjectName + this.recordTypeName + rowKey] = style.CSS_Class_Name__c;
                 }
-                else if(style.Comparison_Criteria__c == 'less than or equal to' && row[style.Field_To_Compare__r.Field_Name__c] >= style.Comparison_Value__c){
+                else if(style.Comparison_Criteria__c === 'less than or equal to' && row[style.Field_To_Compare__r.Field_Name__c] >= style.Comparison_Value__c){
                     flattenedRow[this.relatedObjectName + this.recordTypeName + rowKey] = style.CSS_Class_Name__c;
                 }
             }

@@ -37,5 +37,13 @@
         <members>Org_Ultra_Related_List_Styles</members>
         <name>StaticResource</name>
     </types>
+    <types>
+        <members>*</members>
+        <name>CustomObject</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>CustomTab</name>
+    </types>
     <version>51.0</version>
 </Package>

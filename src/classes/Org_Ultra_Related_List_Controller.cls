@@ -172,19 +172,111 @@ public with sharing class Org_Ultra_Related_List_Controller {
     }
     @TestVisible
     private static List<UE_Related_List_Column__mdt> getRelatedListColumnMetadata(String objectType, String recordTypeName){
+        List<String> fieldsToExclude = getUserFieldsToExclude(objectType);
         List<UE_Related_List_Column__mdt> dataColumns = new List<UE_Related_List_Column__mdt>();
         String query = 'SELECT Id, Label, Column_Order__c, Allow_Editing__c, Allow_Sorting__c, URL_Id__c, Field_Label__c,\n' +
                 'Allow_Text_Wrap__c, Column_Type__c, Field_Name__c, Initial_Column_Width__c, Object_Developer_Name__c,\n' +
                 'Show_on_View_Only_Form__c, Record_Type_Name__c, Show_on_Table__c, Allow_Search__c, Show_on_New_Record_Form__c\n' +
                 'FROM UE_Related_List_Column__mdt WHERE Object_Developer_Name__c = :objectType ';
         if(!String.isBlank(recordTypeName)){
-            query += 'AND (Record_Type_Name__c LIKE \'%'+ recordTypeName + '%\' OR Record_Type_Name__c LIKE \'%default\')';
+            query += 'AND (Record_Type_Name__c LIKE \'%'+ recordTypeName + '%\' OR Record_Type_Name__c LIKE \'%default\') ';
+        }
+        if(!fieldsToExclude.isEmpty()){
+            query += 'AND Field_Label__c NOT IN :fieldsToExclude ';
         }
         query += 'ORDER BY Column_Order__c ASC LIMIT 1000';
 
         dataColumns = Database.query(query);
         return dataColumns;
     }
+
+    @AuraEnabled
+    public static List<String> getUserFieldsToExclude(String objectType){
+        List<String> fieldsToExclude = new List<String>();
+        String excludedColumns = '';
+
+        List<Org_Related_List_User_Preference__c> userPreferences = [SELECT Id, User__c, Fields_Excluded_From_Table__c
+        FROM Org_Related_List_User_Preference__c WHERE Object_Developer_Name__c = :objectType
+        AND User__c = :UserInfo.getUserId() LIMIT 1];
+
+        if(!userPreferences.isEmpty()){
+            excludedColumns = userPreferences[0].Fields_Excluded_From_Table__c;
+        }
+        else if(userPreferences.isEmpty()){
+            excludedColumns = [SELECT Id, User__c, Fields_Excluded_From_Table__c
+            FROM Org_Related_List_User_Preference__c WHERE Object_Developer_Name__c = :objectType
+            AND Default_Excluded_Fields__c = TRUE LIMIT 1]?.Fields_Excluded_From_Table__c;
+        }
+
+        if(String.isBlank(excludedColumns)){return fieldsToExclude;}
+
+        fieldsToExclude = excludedColumns.split(',');
+
+        return fieldsToExclude;
+    }
+
+    @AuraEnabled
+    public static List<String> getUserFieldsToInclude(String excludedFields, String objectType){
+        List<UE_Related_List_Column__mdt> dataColumns = [SELECT Id, Label, Column_Order__c, Allow_Editing__c, Allow_Sorting__c, URL_Id__c, Field_Label__c,
+                Allow_Text_Wrap__c, Column_Type__c, Field_Name__c, Initial_Column_Width__c, Object_Developer_Name__c,
+                Show_on_View_Only_Form__c, Record_Type_Name__c, Show_on_Table__c, Allow_Search__c, Show_on_New_Record_Form__c
+                FROM UE_Related_List_Column__mdt WHERE Object_Developer_Name__c = :objectType AND Show_on_Table__c = TRUE AND Column_Type__c != 'action'];
+        List<String> excludedFieldNames = (List<String>)JSON.deserialize(excludedFields, List<String>.class);
+
+        Map<String, String> fieldMap = new Map<String, String>();
+        for(UE_Related_List_Column__mdt column: dataColumns){
+            fieldMap.put(column.Field_Label__c, column.Field_Label__c);
+        }
+        if(excludedFields == null){return fieldMap.values();}
+        for(String fieldName: excludedFieldNames){
+            if(fieldMap.containsKey(fieldName)){
+                fieldMap.remove(fieldName);
+            }
+        }
+        return fieldMap.values();
+    }
+
+    @AuraEnabled
+    public static void saveUserExcludedFields(String objectType, String fieldsToExcludePassed){
+        System.debug('Fields to exclude ::: ' + fieldsToExcludePassed);
+        String fieldsToExclude = createExcludedColumnsString(fieldsToExcludePassed);
+        List<Org_Related_List_User_Preference__c> userPreferences = [SELECT Id, User__c, Fields_Excluded_From_Table__c
+        FROM Org_Related_List_User_Preference__c WHERE Object_Developer_Name__c = :objectType
+        AND User__c = :UserInfo.getUserId() LIMIT 1];
+
+        if(!userPreferences.isEmpty()){
+            userPreferences[0].Fields_Excluded_From_Table__c = fieldsToExclude;
+            try{
+                update userPreferences;
+            }
+            catch(Exception ex){
+                throw new AuraHandledException('There was an error saving the selected fields: ' + ex.getMessage());
+            }
+        }
+        else{
+            Org_Related_List_User_Preference__c relatedListUserPreference = new Org_Related_List_User_Preference__c();
+            relatedListUserPreference.User__c = UserInfo.getUserId();
+            relatedListUserPreference.Object_Developer_Name__c = objectType;
+            relatedListUserPreference.Fields_Excluded_From_Table__c = fieldsToExclude;
+            try{
+                insert relatedListUserPreference;
+            }
+            catch(Exception ex){
+                throw new AuraHandledException('There was an error saving the selected fields: ' + ex.getMessage());
+            }
+        }
+    }
+
+    private static String createExcludedColumnsString(String fieldsToExcludePassed){
+        String fieldsToExclude = '';
+        List<String> userSelectedFields = (List<String>)JSON.deserialize(fieldsToExcludePassed, List<String>.class);
+        for(String field: userSelectedFields){
+            fieldsToExclude += field + ',';
+        }
+        fieldsToExclude.removeEnd(',');
+        return fieldsToExclude;
+    }
+
     @TestVisible
     private static List<Org_DataTable_Column_Wrapper> buildColumnData(List<UE_Related_List_Column__mdt> columnMetadata, String recordTypeName)
     {

@@ -9,14 +9,14 @@
 	},
 
 	doToastRefresh : function(component, event, helper) {
-		const relatedObjectName = component.get("v.editableRelatedObjectLabel").toUpperCase();
-		const objectName = component.get("v.relatedObjectLabel").toUpperCase();
+		const relatedObjectName = component.get("v.editableRelatedObjectLabel");
+		const objectName = component.get("v.relatedObjectLabel");
 		let templateData = event.getParam("messageTemplateData");
-		console.log('This is the template data ::: ' + templateData);
 		if(templateData) {
 			templateData.forEach(message => {
-				console.log('This is the message ::: ' + message.toUpperCase() + ' ::: This is the object name ::: ' + objectName + ' This is the related object name ::: ' + relatedObjectName);
-				if (message.toUpperCase().includes(objectName) || message.toUpperCase().includes(relatedObjectName)) {
+				console.log('This is the message ::: ' + typeof message);
+				if ((message && typeof message == 'string') && ((objectName && message.toUpperCase().includes(objectName.toUpperCase())) ||
+					(relatedObjectName && message.toUpperCase().includes(relatedObjectName.toUpperCase())))) {
 					component.find("enhanced_list").getTableData();
 				}
 			});

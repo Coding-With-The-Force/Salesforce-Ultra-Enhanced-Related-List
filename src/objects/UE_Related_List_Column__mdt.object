@@ -111,6 +111,11 @@
                     <default>false</default>
                     <label>lookup</label>
                 </value>
+                <value>
+                    <fullName>image</fullName>
+                    <default>false</default>
+                    <label>image</label>
+                </value>
             </valueSetDefinition>
         </valueSet>
     </fields>

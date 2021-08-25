@@ -15,6 +15,15 @@
                     <lightning-input type="search" label={searchTableLabel} onchange={searchDataTable}></lightning-input>
                 </lightning-layout-item>
                 <lightning-layout-item class="slds-align-bottom slds-p-around_xx-small">
+                    <template if:true={showUserFieldSelectionButton}>
+                        <lightning-button variant="brand"
+                                          label="Select Fields to Display"
+                                          title="Select Fields to Display"
+                                          onclick={getUserFieldsToExclude}>
+                        </lightning-button>
+                    </template>
+                </lightning-layout-item>
+                <lightning-layout-item class="slds-align-bottom slds-p-around_xx-small">
                     <template if:true={showNewButton}>
                         <lightning-button variant="brand"
                                           label="New Record"
@@ -72,28 +81,93 @@
     <template if:true={openModal}>
         <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
             <div class="slds-modal__container">
-                <header class="slds-modal__header">
-                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
-                        <lightning-icon icon-name="utility:close"
-                                        alternative-text="close"
-                                        variant="inverse"
-                                        size="small" ></lightning-icon>
-                        <span class="slds-assistive-text">Close</span>
-                    </button>
-                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">New {relatedObjectLabel}</h2>
-                </header>
-                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
                     <template if:true={showRecordView}>
-                        <lightning-record-form
-                                record-id={viewRowRecordId}
-                                object-api-name={relatedObjectName}
-                                fields={objectViewFields}
-                                onsuccess={handleRecordCreated}
-                                mode="readonly"
-                                oncancel={closeModal}>
-                        </lightning-record-form>
+                        <header class="slds-modal__header">
+                            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                                <lightning-icon icon-name="utility:close"
+                                                alternative-text="close"
+                                                variant="inverse"
+                                                size="small" ></lightning-icon>
+                                <span class="slds-assistive-text">Close</span>
+                            </button>
+                            <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">View {relatedObjectLabel}</h2>
+                        </header>
+                        <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                            <lightning-record-form
+                                    record-id={viewRowRecordId}
+                                    object-api-name={relatedObjectName}
+                                    fields={objectViewFields}
+                                    onsuccess={handleRecordCreated}
+                                    mode="readonly"
+                                    oncancel={closeModal}>
+                            </lightning-record-form>
+                        </div>
                     </template>
-                </div>
+                    <template if:true={showUserFieldPreferences}>
+                        <header class="slds-modal__header">
+                            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                                <lightning-icon icon-name="utility:close"
+                                                alternative-text="close"
+                                                variant="inverse"
+                                                size="small" ></lightning-icon>
+                                <span class="slds-assistive-text">Close</span>
+                            </button>
+                            <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">Select Fields to Display</h2>
+                        </header>
+                        <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
+                            <div class="slds-form-element" role="group" aria-labelledby="picklist-group-label">
+                                <span id="picklist-group-label" class="slds-form-element__label slds-form-element__legend">Fields Available to Display</span>
+                                <div class="slds-form-element__control">
+                                    <div class="slds-dueling-list">
+                                        <div class="slds-assistive-text" id="drag-live-region" aria-live="assertive"></div>
+                                        <div class="slds-assistive-text" id="option-drag-label">Press space bar when on an item, to move it within the list. Cmd/Ctrl plus left and right arrow keys, to move items between lists.</div>
+                                        <div class="slds-dueling-list__column">
+                                            <span class="slds-form-element__label" id="label-9">Available Fields</span>
+                                            <div class="slds-dueling-list__options">
+                                                <ul aria-describedby="option-drag-label" aria-labelledby="label-9" aria-multiselectable="true" class="slds-listbox slds-listbox_vertical" role="listbox">
+                                                    <template for:each={userExcludedFields} for:item='field'>
+                                                        <li onclick={removeRow} data-fieldnametoinclude={field} key={field} role="presentation" class="slds-listbox__item excludedItems" aria-selected="false">
+                                                            <div class="slds-listbox__option slds-listbox__option_plain slds-media slds-media_small slds-media_inline" draggable="true" role="option" tabindex="0">
+                                                            <span class="slds-media__body">
+                                                              <span class="slds-truncate" title={field}>{field}</span>
+                                                            </span>
+                                                            </div>
+                                                        </li>
+                                                    </template>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="slds-dueling-list__column">
+                                            <lightning-button icon-name="utility:right" class="slds-button slds-button_icon slds-button_icon-container" title="Move Selection to Second Category" onclick={removeExcludedField}>
+                                            </lightning-button>
+                                            <lightning-button icon-name="utility:left" class="slds-button slds-button_icon slds-button_icon-container" title="Move Selection to First Category" onclick={addExcludedField}>
+                                            </lightning-button>
+                                        </div>
+                                        <div class="slds-dueling-list__column">
+                                            <span class="slds-form-element__label" id="label-10">Selected Fields</span>
+                                            <div class="slds-dueling-list__options">
+                                                <ul aria-describedby="option-drag-label" aria-labelledby="label-10" aria-multiselectable="true" class="slds-listbox slds-listbox_vertical" role="listbox">
+                                                    <template for:each={userIncludedFields} for:item='field'>
+                                                    <li onclick={selectRow} data-fieldtoexclude={field} key={field} role="presentation" class="slds-listbox__item includedItems" aria-selected="false">
+                                                        <div class="slds-listbox__option slds-listbox__option_plain slds-media slds-media_small slds-media_inline" draggable="true" role="option" tabindex="0">
+                                                            <span class="slds-media__body">
+                                                              <span class="slds-truncate" title={field}>{field}</span>
+                                                            </span>
+                                                        </div>
+                                                    </li>
+                                                    </template>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_outline-brand" onclick={closeModal} title="Cancel">Cancel</button>
+                    <button class="slds-button slds-button_brand" title="Save" onclick={saveExcludedFields}>Save</button>
+                </footer>
             </div>
         </section>
         <div class="slds-backdrop slds-backdrop_open"></div>

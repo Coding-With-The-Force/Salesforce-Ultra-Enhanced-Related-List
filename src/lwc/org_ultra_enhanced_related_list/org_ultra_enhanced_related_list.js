@@ -1,5 +1,4 @@
-import { LightningElement, api } from 'lwc';
-import {ShowToastEvent} from "lightning/platformShowToastEvent";
+import { LightningElement, api, track } from 'lwc';
 import {NavigationMixin} from "lightning/navigation";
 import {loadStyle} from "lightning/platformResourceLoader";
 import getPageSizeOptionsFromController from '@salesforce/apex/Org_Ultra_Related_List_Controller.getTableSizeOptionsController';
@@ -13,8 +12,12 @@ import saveTableDataToServerController from '@salesforce/apex/Org_Ultra_Related_
 import getRecordTypeId from '@salesforce/apex/Org_Ultra_Related_List_Controller.getRecordTypeId';
 import orgUltraEnhancedRelatedListStyle from '@salesforce/resourceUrl/Org_Ultra_Related_List_Styles';
 import getColumnStylesFromController from '@salesforce/apex/Org_Ultra_Related_List_Controller.getColumnStyles';
+import getUserFieldsToExcludeController from '@salesforce/apex/Org_Ultra_Related_List_Controller.getUserFieldsToExclude';
+import getUserFieldsToIncludeController from '@salesforce/apex/Org_Ultra_Related_List_Controller.getUserFieldsToInclude';
+import saveUserExcludedFieldsController from '@salesforce/apex/Org_Ultra_Related_List_Controller.saveUserExcludedFields';
 import {deleteRecord} from 'lightning/uiRecordApi';
 import {sortRows, showToast, searchTable, manageRowSelection} from "c/datatableUtils";
+
 
 export default class Org_ultra_enhanced_related_list extends NavigationMixin(LightningElement) {
 
@@ -27,13 +30,17 @@ export default class Org_ultra_enhanced_related_list extends NavigationMixin(Lig
     @api showDeleteButton;
     @api showPaginationControls;
     @api searchTableLabel;
+    @api showUserFieldSelectionButton;
 
+    @track userExcludedFields = [];
+    @track userIncludedFields = [];
     objectLabel = '';
     recordTypeName;
     draftValues = [];
     objectViewFields;
     openModal = false;
     showRecordView = false;
+    showUserFieldPreferences = false;
     viewRowRecordId = '';
     columnStyleList = [];
 
@@ -60,7 +67,6 @@ export default class Org_ultra_enhanced_related_list extends NavigationMixin(Lig
         loadStyle(this, orgUltraEnhancedRelatedListStyle).then(() => {
             this._getRecordTypeId();
         });
-
     }
 
     _getRecordTypeId(){
@@ -372,6 +378,7 @@ export default class Org_ultra_enhanced_related_list extends NavigationMixin(Lig
     closeModal(){
         this.openModal = false;
         this.showRecordView = false;
+        this.showUserFieldPreferences = true;
     }
 
     deleteSelectedRecords(){
@@ -449,6 +456,102 @@ export default class Org_ultra_enhanced_related_list extends NavigationMixin(Lig
         this.pageHasChanged = true;
     }
 
+    showUserFieldsModal(){
+        this.openModal = true;
+        this.showUserFieldPreferences = true;
+    }
+
+    getUserFieldsToExclude(){
+        getUserFieldsToExcludeController({"objectType": this.objectLabel}).then(result=>{
+            this.userExcludedFields = result;
+            this.getUserFieldsToDisplay();
+        }).catch(error=>{
+            const errorMsg = 'There was an error retrieving the users field preferences ::: ' + JSON.stringify(error);
+            this.dispatchEvent(showToast('Error retrieving user field preference record', errorMsg, 'error', 'dismissible'));
+        });
+    }
+
+    getUserFieldsToDisplay(){
+        getUserFieldsToIncludeController({"excludedFields": JSON.stringify(this.userExcludedFields), "objectType": this.objectLabel}).then(result=>{
+            this.userIncludedFields = result;
+            this.showUserFieldsModal();
+        }).catch(error=>{
+            const errorMsg = 'There was an error retrieving the users field preferences ::: ' + JSON.stringify(error);
+            this.dispatchEvent(showToast('Error retrieving user field preference record', errorMsg, 'error', 'dismissible'));
+        });
+    }
+
+    selectRow(event){
+        const fieldName = event.currentTarget.dataset.fieldtoexclude;
+        const selectedField = this.template.querySelector("[data-fieldtoexclude='" + fieldName + "']");
+        if(selectedField.getAttribute('aria-selected') == 'false') {
+            selectedField.setAttribute('aria-selected', 'true');
+        }
+        else{
+            selectedField.setAttribute('aria-selected', 'false');
+        }
+    }
+
+    removeRow(event){
+        const fieldName = event.currentTarget.dataset.fieldnametoinclude;
+        const selectedField = this.template.querySelector("[data-fieldnametoinclude='" + fieldName + "']");
+        if(selectedField.getAttribute('aria-selected') == 'false') {
+            selectedField.setAttribute('aria-selected', 'true');
+        }
+        else{
+            selectedField.setAttribute('aria-selected', 'false');
+        }
+    }
+
+    addExcludedField(){
+        const includedItems = this.template.querySelectorAll('.includedItems');
+        let includedFields = this.userIncludedFields;
+        let excludedFields = this.userExcludedFields;
+        for(let item of includedItems){
+            if(item.getAttribute('aria-selected') == 'true'){
+                console.log('This is the include item ::: ' + item);
+                excludedFields.push(item.getAttribute('data-fieldtoexclude'));
+            }
+        }
+
+        includedFields = includedFields.filter(value=>{
+            return !excludedFields.includes(value);
+        });
+
+        this.userExcludedFields = excludedFields;
+        this.userIncludedFields = includedFields;
+        console.log('These are the exclusion fields ::: ' + this.userExcludedFields);
+    }
+
+    removeExcludedField(){
+        const excludedItems = this.template.querySelectorAll('.excludedItems');
+        let includedFields = this.userIncludedFields;
+        let excludedFields = this.userExcludedFields;
+        for(let item of excludedItems){
+            console.log('This is the exclude item ::: ' + item);
+            if(item.getAttribute('aria-selected') == 'true'){
+                includedFields.push(item.getAttribute('data-fieldnametoinclude'));
+            }
+        }
+
+        excludedFields = excludedFields.filter(value=>{
+            return !includedFields.includes(value);
+        });
+
+        this.userExcludedFields = excludedFields;
+        this.userIncludedFields = includedFields;
+    }
+
+    saveExcludedFields(){
+        saveUserExcludedFieldsController({'objectType': this.objectLabel, 'fieldsToExcludePassed': JSON.stringify(this.userExcludedFields)}).then(result =>{
+            this.dispatchEvent(showToast('Successfully saved user field preferences', 'User field preferences saved', 'success', 'dismissible'));
+            this.closeModal();
+            this.getDataTableColumns();
+        }).catch(error=>{
+            const errorMsg = 'There was an error saving the users field preferences ::: ' + JSON.stringify(error);
+            this.dispatchEvent(showToast('Error saving user field preference record', errorMsg, 'error', 'dismissible'));
+        });
+    }
     /** @description Calculates the number of pages based on the number of rows and the page size
      *  @returns {number} - the number of pages
      */

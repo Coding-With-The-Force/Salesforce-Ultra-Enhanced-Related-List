@@ -8,6 +8,7 @@
 	<design:attribute name="relatedFieldName" label="Relationship Field" description="Enter the name of the field that relates this object to the object you're placing this related list on."/>
 	<design:attribute name="showNewButton" label="Show New Button?" description="Show the new record button on the related list?"/>
 	<design:attribute name="showDeleteButton" label="Show Mass Delete Button?" description="Show the mass delete button on the related list?"/>
+	<design:attribute name="showUserFieldSelectionButton" label="Show User Field Selection Button?" description="Would you like to give users the ability to select their own fields?"/>
 	<design:attribute name="editableRelatedRecordField" label="Edit Modal Field" description="Enter the name of the field that holds the id for a related record you would like to be able to pop a record edit modal for."/>
 	<design:attribute name="editableRelatedObjectType" label="Edit Modal Object" description="Enter the name of the related object you would like to be able to pop a record edit modal for."/>
 </design:component>

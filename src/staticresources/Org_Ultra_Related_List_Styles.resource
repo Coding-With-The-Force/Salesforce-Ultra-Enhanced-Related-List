@@ -7,3 +7,9 @@
 .NotGerryRed{
     color: red;
 }
+
+.slds-button_neutral, .slds-button--neutral{
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+    border: none !important;
+}

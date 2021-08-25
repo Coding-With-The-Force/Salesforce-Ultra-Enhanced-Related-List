@@ -3,11 +3,12 @@
 	<aura:attribute name="relatedObjectName" type="String"/>
 	<aura:attribute name="relatedFieldName" type="String"/>
 	<aura:attribute name="showNewButton" type="Boolean"/>
+	<aura:attribute name="showUserFieldSelectionButton" type="Boolean"/>
 	<aura:attribute name="showDeleteButton" type="Boolean"/>
 	<aura:attribute name="editableRelatedRecordField" type="String"/>
 	<aura:attribute name="editableRelatedObjectType" type="String"/>
-	<aura:attribute name="relatedObjectLabel" type="String"/>
-	<aura:attribute name="editableRelatedObjectLabel" type="String"/>
+	<aura:attribute name="relatedObjectLabel" type="String" default="N/A"/>
+	<aura:attribute name="editableRelatedObjectLabel" type="String" default="N/A"/>
 	<aura:attribute name="searchTableLabel" type="String"/>
 	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
 	<aura:handler event="force:showToast" action="{!c.doToastRefresh}"/>
@@ -16,5 +17,7 @@
 	<c:org_ultra_enhanced_related_list aura:id="enhanced_list" recordId="{!v.recordId}" relatedObjectName="{!v.relatedObjectName}"
 									   relatedFieldName="{!v.relatedFieldName}" searchTableLabel="{!v.searchTableLabel}"
 									   showNewButton="{!v.showNewButton}" showDeleteButton="{!v.showDeleteButton}"
+									   showUserFieldSelectionButton="{!v.showUserFieldSelectionButton}"
 									   editableRelatedRecordField="{!v.editableRelatedRecordField}" editableRelatedObjectType="{!v.editableRelatedObjectType}"/>
+
 </aura:component>
